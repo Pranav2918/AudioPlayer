@@ -15,7 +15,6 @@ class _LocalAudio extends State<LocalAudio> {
   Duration _position = const Duration();
   AudioPlayer advancedPlayer = AudioPlayer();
   AudioCache audioCache = AudioCache();
-  String _platformVersion = 'Unknown';
   double? _sliderVolume;
 
   int? maxVol, currentVol;
@@ -50,10 +49,6 @@ class _LocalAudio extends State<LocalAudio> {
       platformVersion = 'Failed to get platform version.';
     }
     if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   @override
@@ -96,12 +91,13 @@ class _LocalAudio extends State<LocalAudio> {
             value: _sliderVolume ?? 0,
             onChanged: (value) {
               setState(() {
-                _sliderVolume = value;
+                _sliderVolume = (value * 100).round() / 100.0;
+
                 AudioManager.instance.setVolume(value, showVolume: true);
-                print("Volume: $value");
               });
             },
-          )
+          ),
+          Text("Volume $_sliderVolume")
         ],
       ),
     );
